@@ -1,0 +1,20 @@
+projects:
+  - slug: xards
+    name: "XARDS"
+    path: "02 XARDS"
+    enabled: true
+
+  - slug: dxr
+    name: "DXR"
+    path: "01 DXR"
+    enabled: true
+
+  - slug: privat
+    name: "Privat"
+    path: "00 Privat"
+    enabled: true
+
+  - slug: general
+    name: "General"
+    path: "09 Global"
+    enabled: true

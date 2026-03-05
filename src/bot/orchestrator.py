@@ -123,6 +123,7 @@ class MessageOrchestrator:
             for key, value in self.deps.items():
                 context.bot_data[key] = value
             context.bot_data["settings"] = self.settings
+            context.bot_data["_orchestrator"] = self
             context.user_data.pop("_thread_context", None)
 
             is_sync_bypass = handler.__name__ == "sync_threads"
@@ -395,6 +396,15 @@ class MessageOrchestrator:
         )
         app.add_handler(
             MessageHandler(filters.PHOTO, self._inject_deps(message.handle_photo)),
+            group=10,
+        )
+        # Voice/audio messages -> Groq Whisper -> Claude
+        from .handlers.voice import handle_voice_message
+        app.add_handler(
+            MessageHandler(
+                filters.VOICE | filters.AUDIO,
+                self._inject_deps(handle_voice_message),
+            ),
             group=10,
         )
         app.add_handler(
@@ -865,7 +875,7 @@ class MessageOrchestrator:
     ) -> None:
         """Direct Claude passthrough. Simple progress. No suggestions."""
         user_id = update.effective_user.id
-        message_text = update.message.text
+        message_text = context.user_data.pop("_voice_override", None) or update.message.text
 
         logger.info(
             "Agentic text message",

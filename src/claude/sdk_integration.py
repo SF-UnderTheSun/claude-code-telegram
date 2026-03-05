@@ -486,7 +486,7 @@ class ClaudeSDKManager:
                         tool_calls=tool_calls if tool_calls else None,
                     )
                     await stream_callback(update)
-                elif content:
+                elif content and not isinstance(content, list):
                     # Fallback for non-list content
                     update = StreamUpdate(
                         type="assistant",

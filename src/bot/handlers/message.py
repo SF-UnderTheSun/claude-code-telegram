@@ -298,7 +298,7 @@ async def handle_text_message(
 ) -> None:
     """Handle regular text messages as Claude prompts."""
     user_id = update.effective_user.id
-    message_text = update.message.text
+    message_text = context.user_data.pop("_voice_override", None) or update.message.text
     settings: Settings = context.bot_data["settings"]
 
     # Get services
