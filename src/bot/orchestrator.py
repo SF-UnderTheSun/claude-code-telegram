@@ -1318,7 +1318,9 @@ class MessageOrchestrator:
         voice_handler = features.get_voice_handler() if features else None
 
         if not voice_handler:
-            await update.message.reply_text(self._voice_unavailable_message())
+            # Fallback: Groq Whisper handler (custom local integration)
+            from .handlers.voice import handle_voice_message
+            await handle_voice_message(update, context)
             return
 
         chat = update.message.chat
